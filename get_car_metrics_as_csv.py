@@ -1,4 +1,5 @@
 import obd
+import datetime
 from obd import OBDCommand
 
 def batterySOC(messages):
@@ -13,6 +14,10 @@ def batteryTemp(messages):
     d = d[3:]
     v = d[0] - 40
     return v
+
+
+current_time = datetime.datetime.now()
+formatted_time = current_time.strftime('%d-%m-%Y,%H:%M')
 
 commands = [
     OBDCommand("SOC",        "Battery SOC",    b"228334", 3, batterySOC,  header = b"7E4" ),
@@ -29,6 +34,11 @@ connection = obd.OBD(fast=False, timeout=30)
 for cmd in commands:
     connection.supported_commands.add(cmd)
 
+results=[]
+results.append(formatted_time)
+
 for cmd in commands:
-    result = connection.query(cmd)
-    print(f"{cmd.desc}: {result}")
+    value = connection.query(cmd)
+    results.append(str(value))
+
+print(",".join(results))
