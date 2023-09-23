@@ -9,6 +9,15 @@ def batterySOC(messages):
     v = round(v, 2)
     return v
 
+def batterySOChd(messages):
+    d = messages[0].data
+    d = d[3:]
+    a = d[0]
+    b = d[1]
+    v = ((((a*256)+b)*100)/65535)
+    v = round(v, 2)
+    return v
+
 def batteryTemp(messages):
     d = messages[0].data
     d = d[3:]
@@ -20,7 +29,7 @@ current_time = datetime.datetime.now()
 formatted_time = current_time.strftime('%d-%m-%Y,%H:%M')
 
 commands = [
-    OBDCommand("SOC",        "Battery SOC",    b"228334", 3, batterySOC,  header = b"7E4" ),
+    OBDCommand("SOC",        "Battery SOC",    b"2243AF", 5, batterySOChd,  header = b"7E4" ),
     OBDCommand("MOD_1_TEMP", "Battery Temp 1", b"2240D7", 4, batteryTemp, header = b"7E7" ),
     OBDCommand("MOD_2_TEMP", "Battery Temp 2", b"2240D9", 4, batteryTemp, header = b"7E7" ),
     OBDCommand("MOD_3_TEMP", "Battery Temp 3", b"2240DB", 4, batteryTemp, header = b"7E7" ),
